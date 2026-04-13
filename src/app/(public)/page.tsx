@@ -23,7 +23,7 @@ export default async function HomePage() {
     .limit(3);
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-16 flex flex-col gap-24">
+    <div className="mx-auto max-w-7xl px-8 py-16 flex flex-col gap-24">
       {/* Hero */}
       <section className="flex flex-col gap-6">
         <div className="flex flex-col gap-3">

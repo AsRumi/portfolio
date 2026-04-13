@@ -52,7 +52,7 @@ export default async function ProjectDetailPage({ params }: Props) {
     : { data: [] };
 
   return (
-    <div className="mx-auto max-w-4xl px-6 py-16 flex flex-col gap-12">
+    <div className="mx-auto max-w-5xl px-8 py-16 flex flex-col gap-12">
       {/* Back */}
       <Link
         href="/projects"
@@ -116,7 +116,7 @@ export default async function ProjectDetailPage({ params }: Props) {
 
       {/* Markdown Content */}
       {p.content && (
-        <article className="prose prose-sm max-w-none text-foreground prose-headings:font-display prose-headings:text-foreground prose-a:text-accent">
+        <article className="prose prose-stone max-w-none prose-headings:font-display prose-headings:text-foreground prose-headings:font-semibold prose-p:text-foreground prose-p:leading-relaxed prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-code:text-foreground prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:before:content-none prose-code:after:content-none prose-blockquote:border-accent prose-blockquote:text-muted-foreground prose-li:text-foreground prose-img:rounded-xl">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{p.content}</ReactMarkdown>
         </article>
       )}

@@ -15,7 +15,7 @@ export default function Header() {
 
   return (
     <header className="w-full border-b border-border bg-background">
-      <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-6">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-8">
         {/* Logo / Name */}
         <Link
           href="/"

@@ -20,7 +20,7 @@ export default async function BlogPage() {
   ).sort();
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-16 flex flex-col gap-10">
+    <div className="mx-auto max-w-7xl px-8 py-16 flex flex-col gap-10">
       <div className="flex flex-col gap-3">
         <h1 className="font-display text-5xl font-semibold">Blog</h1>
         <p className="text-muted-foreground max-w-xl">
