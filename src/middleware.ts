@@ -29,15 +29,18 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Redirect unauthenticated users away from /admin routes
-  if (!user && request.nextUrl.pathname.startsWith("/admin")) {
+  const { pathname } = request.nextUrl;
+
+  // Redirect unauthenticated users away from /admin routes,
+  // but NOT from /admin/login itself — that would cause an infinite redirect loop.
+  if (!user && pathname.startsWith("/admin") && pathname !== "/admin/login") {
     const url = request.nextUrl.clone();
     url.pathname = "/admin/login";
     return NextResponse.redirect(url);
   }
 
-  // Redirect logged-in users away from login page
-  if (user && request.nextUrl.pathname === "/admin/login") {
+  // Redirect already logged-in users away from the login page
+  if (user && pathname === "/admin/login") {
     const url = request.nextUrl.clone();
     url.pathname = "/admin";
     return NextResponse.redirect(url);
