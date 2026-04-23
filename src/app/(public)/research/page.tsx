@@ -19,14 +19,25 @@ export default async function ResearchPage() {
   ).sort();
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-16 flex flex-col gap-10">
-      <div className="flex flex-col gap-3">
-        <h1 className="font-display text-5xl font-semibold">Research</h1>
-        <p className="text-muted-foreground max-w-xl">
-          Published papers and ongoing research in medical imaging, deep learning, and multimodal AI.
-        </p>
+    <div className="min-h-screen" style={{ background: "linear-gradient(180deg, #d6652a 0%, #c45520 40%, #b84418 100%)" }}>
+      <div className="border-b border-white/20">
+        <div className="mx-auto max-w-5xl px-8 pt-32 pb-12 flex flex-col gap-4">
+          <p className="text-xs font-medium text-white/60 uppercase tracking-widest">
+            Publications
+          </p>
+          <h1 className="font-display text-5xl font-semibold text-white">
+            Research
+          </h1>
+          <p className="text-white/75 max-w-xl leading-relaxed">
+            Published papers and ongoing research in medical imaging, deep
+            learning, and multimodal AI.
+          </p>
+        </div>
       </div>
-      <PaperList papers={papers as ResearchPaper[] ?? []} allTags={allTags} />
+
+      <div className="mx-auto max-w-5xl px-8 py-16">
+        <PaperList papers={papers as ResearchPaper[] ?? []} allTags={allTags} />
+      </div>
     </div>
   );
 }

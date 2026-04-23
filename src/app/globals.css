@@ -61,34 +61,34 @@
 }
 
 :root {
-  /* Natural Elegance — main palette in oklch */
-  --background: oklch(0.91 0.045 60); /* #FFDBBB — warm cream */
-  --foreground: oklch(0.35 0.06 45); /* #664930 — dark bark */
+  /* Natural Elegance — Mistral-aligned cream palette */
+  --background: oklch(0.96 0.02 80); /* #FAF3E0 — warm parchment */
+  --foreground: oklch(0.27 0.05 42); /* #3D2B1F — deep bark */
 
-  --card: oklch(0.83 0.03 50); /* #CCBEB1 — cream secondary */
-  --card-foreground: oklch(0.35 0.06 45); /* #664930 */
+  --card: oklch(0.98 0.015 80); /* #FFF8EC — lighter card bg */
+  --card-foreground: oklch(0.27 0.05 42); /* #3D2B1F */
 
-  --popover: oklch(0.91 0.045 60); /* #FFDBBB */
-  --popover-foreground: oklch(0.35 0.06 45);
+  --popover: oklch(0.96 0.02 80); /* #FAF3E0 */
+  --popover-foreground: oklch(0.27 0.05 42);
 
-  --primary: oklch(0.35 0.06 45); /* #664930 — dark bark */
-  --primary-foreground: oklch(0.91 0.045 60); /* #FFDBBB */
+  --primary: oklch(0.27 0.05 42); /* #3D2B1F — deep bark */
+  --primary-foreground: oklch(0.96 0.02 80); /* #FAF3E0 */
 
-  --secondary: oklch(0.83 0.03 50); /* #CCBEB1 */
-  --secondary-foreground: oklch(0.35 0.06 45);
+  --secondary: oklch(0.92 0.025 76); /* #F0E4CC — warm card */
+  --secondary-foreground: oklch(0.27 0.05 42);
 
-  --muted: oklch(0.83 0.03 50); /* #CCBEB1 */
-  --muted-foreground: oklch(0.55 0.05 47); /* #997E67 */
+  --muted: oklch(0.92 0.025 76); /* #F0E4CC */
+  --muted-foreground: oklch(0.52 0.05 50); /* #7A6152 */
 
-  --accent: oklch(0.55 0.05 47); /* #997E67 — mid bark */
-  --accent-foreground: oklch(0.91 0.045 60);
+  --accent: oklch(0.65 0.08 60); /* #B8884A — warm amber */
+  --accent-foreground: oklch(0.96 0.02 80);
 
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.78 0.03 50);
-  --input: oklch(0.78 0.03 50);
-  --ring: oklch(0.55 0.05 47); /* #997E67 */
+  --border: oklch(0.88 0.025 72); /* #E8D9C0 */
+  --input: oklch(0.88 0.025 72);
+  --ring: oklch(0.65 0.08 60); /* #B8884A */
 
-  --radius: 0.625rem;
+  --radius: 0.75rem;
 
   --chart-1: oklch(0.55 0.05 47);
   --chart-2: oklch(0.83 0.03 50);
@@ -156,15 +156,21 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "kern" 1, "liga" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
   html {
     @apply font-sans;
+    scroll-behavior: smooth;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display), Georgia, serif;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
   }
   ::selection {
-    background-color: #997e67;
-    color: #ffdbbb;
-  }
-  html {
-    scroll-behavior: smooth;
+    background-color: #B8884A;
+    color: #FAF3E0;
   }
 }

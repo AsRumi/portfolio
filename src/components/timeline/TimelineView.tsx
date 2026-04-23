@@ -5,11 +5,11 @@ import Link from "next/link";
 import type { TimelineEntry } from "@/types";
 
 const CATEGORY_COLORS: Record<TimelineEntry["category"], string> = {
-  project: "bg-blue-400",
-  research: "bg-purple-400",
-  job: "bg-green-400",
-  education: "bg-yellow-400",
-  milestone: "bg-red-400",
+  project: "#60A5FA",
+  research: "#C084FC",
+  job: "#4ADE80",
+  education: "#FCD34D",
+  milestone: "#F87171",
 };
 
 const CATEGORY_LABELS: Record<TimelineEntry["category"], string> = {
@@ -51,20 +51,23 @@ export default function TimelineView({ entries }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-10">
       {/* Category filters */}
       <div className="flex flex-wrap gap-2">
         {ALL_CATEGORIES.map((cat) => (
           <button
             key={cat}
             onClick={() => toggleCategory(cat)}
-            className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+            className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
               activeCategories.has(cat)
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground"
+                ? "bg-white text-[#a84010]"
+                : "bg-white/15 text-white hover:bg-white/25"
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${CATEGORY_COLORS[cat]}`} />
+            <span
+              className="w-2 h-2 rounded-full shrink-0"
+              style={{ backgroundColor: CATEGORY_COLORS[cat] }}
+            />
             {CATEGORY_LABELS[cat]}
           </button>
         ))}
@@ -73,42 +76,53 @@ export default function TimelineView({ entries }: Props) {
       {filtered.length > 0 ? (
         <div className="relative flex flex-col gap-0">
           {/* Vertical line */}
-          <div className="absolute left-3 top-2 bottom-2 w-px bg-border" />
+          <div className="absolute left-3 top-2 bottom-2 w-px bg-white/25" />
 
           {filtered.map((entry) => (
-            <div key={entry.id} className="relative flex gap-6 pb-8">
+            <div key={entry.id} className="relative flex gap-8 pb-10">
               {/* Dot */}
               <div
-                className={`relative z-10 mt-1.5 w-6 h-6 rounded-full shrink-0 flex items-center justify-center ${
-                  entry.color_override ? "" : CATEGORY_COLORS[entry.category]
-                }`}
-                style={entry.color_override ? { backgroundColor: entry.color_override } : {}}
+                className="relative z-10 mt-1.5 w-6 h-6 rounded-full shrink-0 border-2 border-white/30 shadow-sm"
+                style={{
+                  backgroundColor: entry.color_override ?? CATEGORY_COLORS[entry.category],
+                }}
               />
 
-              {/* Content */}
-              <div className="flex flex-col gap-1.5 flex-1">
+              {/* Content card */}
+              <div className="flex flex-col gap-2 flex-1 bg-white/10 border border-white/20 rounded-2xl p-5 hover:bg-white/20 hover:border-white/35 transition-colors backdrop-blur-sm">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="font-medium text-foreground">
+                  <h3 className="font-medium text-white">
                     {entry.related_url ? (
-                      <Link href={entry.related_url} className="hover:text-accent transition-colors">
+                      <Link
+                        href={entry.related_url}
+                        className="hover:text-white/75 transition-colors"
+                      >
                         {entry.title}
                       </Link>
                     ) : (
                       entry.title
                     )}
                   </h3>
-                  <span className={`rounded-full px-2 py-0.5 text-xs text-white ${CATEGORY_COLORS[entry.category]}`}>
+                  <span
+                    className="rounded-full px-2.5 py-0.5 text-xs font-medium"
+                    style={{
+                      backgroundColor: `${CATEGORY_COLORS[entry.category]}30`,
+                      color: CATEGORY_COLORS[entry.category],
+                    }}
+                  >
                     {CATEGORY_LABELS[entry.category]}
                   </span>
                 </div>
-                <p className="text-xs text-muted-foreground">
+
+                <p className="text-xs text-white/55 font-medium">
                   {formatDate(entry.start_date)}
                   {entry.end_date
                     ? ` — ${formatDate(entry.end_date)}`
                     : " — Present"}
                 </p>
+
                 {entry.description && (
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-white/65 leading-relaxed">
                     {entry.description}
                   </p>
                 )}
@@ -117,7 +131,7 @@ export default function TimelineView({ entries }: Props) {
           ))}
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground">No entries match the selected filters.</p>
+        <p className="text-sm text-white/70">No entries match the selected filters.</p>
       )}
     </div>
   );

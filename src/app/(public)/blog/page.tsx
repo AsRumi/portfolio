@@ -20,15 +20,25 @@ export default async function BlogPage() {
   ).sort();
 
   return (
-    <div className="mx-auto max-w-7xl px-8 py-16 flex flex-col gap-10">
-      <div className="flex flex-col gap-3">
-        <h1 className="font-display text-5xl font-semibold">Blog</h1>
-        <p className="text-muted-foreground max-w-xl">
-          Writing on AI/ML research, engineering lessons, and ideas worth thinking through.
-        </p>
+    <div className="min-h-screen" style={{ background: "linear-gradient(180deg, #d6652a 0%, #c45520 40%, #b84418 100%)" }}>
+      <div className="border-b border-white/20">
+        <div className="mx-auto max-w-7xl px-8 pt-32 pb-12 flex flex-col gap-4">
+          <p className="text-xs font-medium text-white/60 uppercase tracking-widest">
+            Writing
+          </p>
+          <h1 className="font-display text-5xl font-semibold text-white">
+            Blog
+          </h1>
+          <p className="text-white/75 max-w-xl leading-relaxed">
+            Writing on AI/ML research, engineering lessons, and ideas worth
+            thinking through.
+          </p>
+        </div>
       </div>
 
-      <BlogGrid posts={posts as BlogPost[] ?? []} allTags={allTags} />
+      <div className="mx-auto max-w-7xl px-8 py-16">
+        <BlogGrid posts={posts as BlogPost[] ?? []} allTags={allTags} />
+      </div>
     </div>
   );
 }

@@ -4,7 +4,6 @@ import { useState } from "react";
 import Link from "next/link";
 import type { BlogPost } from "@/types";
 
-// Rough read time estimate: ~200 words per minute
 function estimateReadTime(content: string | null): string {
   if (!content) return "1 min read";
   const words = content.trim().split(/\s+/).length;
@@ -25,15 +24,15 @@ export default function BlogGrid({ posts, allTags }: Props) {
     : posts;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-10">
       {allTags.length > 0 && (
         <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setActiveTag(null)}
-            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+            className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
               activeTag === null
-                ? "bg-primary text-primary-foreground"
-                : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                ? "bg-white text-[#a84010]"
+                : "bg-white/15 text-white hover:bg-white/25"
             }`}
           >
             All
@@ -42,10 +41,10 @@ export default function BlogGrid({ posts, allTags }: Props) {
             <button
               key={tag}
               onClick={() => setActiveTag(tag === activeTag ? null : tag)}
-              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+              className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
                 activeTag === tag
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  ? "bg-white text-[#a84010]"
+                  : "bg-white/15 text-white hover:bg-white/25"
               }`}
             >
               {tag}
@@ -60,9 +59,9 @@ export default function BlogGrid({ posts, allTags }: Props) {
             <Link
               key={post.id}
               href={`/blog/${post.slug}`}
-              className="group flex flex-col gap-3 rounded-xl border border-border bg-card overflow-hidden hover:border-accent transition-colors"
+              className="group flex flex-col rounded-2xl border border-white/20 bg-white/10 backdrop-blur-sm overflow-hidden hover:bg-white/20 hover:border-white/40 transition-all"
             >
-              <div className="aspect-video w-full bg-muted flex items-center justify-center text-xs text-muted-foreground overflow-hidden">
+              <div className="aspect-video w-full bg-white/10 overflow-hidden flex items-center justify-center text-xs text-white/50">
                 {post.cover_image_url ? (
                   <img
                     src={post.cover_image_url}
@@ -73,14 +72,16 @@ export default function BlogGrid({ posts, allTags }: Props) {
                   "No cover image"
                 )}
               </div>
-              <div className="flex flex-col gap-2 p-5 pt-2">
-                <h3 className="font-medium text-foreground group-hover:text-accent transition-colors line-clamp-2">
+              <div className="flex flex-col gap-3 p-5 flex-1">
+                <h3 className="font-medium text-white group-hover:text-white/80 transition-colors line-clamp-2">
                   {post.title}
                 </h3>
                 {post.excerpt && (
-                  <p className="text-sm text-muted-foreground line-clamp-2">{post.excerpt}</p>
+                  <p className="text-sm text-white/65 line-clamp-2 leading-relaxed">
+                    {post.excerpt}
+                  </p>
                 )}
-                <div className="flex items-center justify-between mt-auto pt-2 text-xs text-muted-foreground">
+                <div className="flex items-center justify-between mt-auto pt-3 border-t border-white/15 text-xs text-white/55">
                   <span>
                     {post.published_at
                       ? new Date(post.published_at).toLocaleDateString("en-US", {
@@ -95,7 +96,10 @@ export default function BlogGrid({ posts, allTags }: Props) {
                 {post.tags && post.tags.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
                     {post.tags.slice(0, 3).map((tag) => (
-                      <span key={tag} className="rounded-full bg-muted px-2.5 py-0.5 text-xs text-muted-foreground">
+                      <span
+                        key={tag}
+                        className="rounded-full bg-white/15 px-2.5 py-0.5 text-xs text-white/80"
+                      >
                         {tag}
                       </span>
                     ))}
@@ -106,7 +110,7 @@ export default function BlogGrid({ posts, allTags }: Props) {
           ))}
         </div>
       ) : (
-        <p className="text-sm text-muted-foreground">No posts match the selected filter.</p>
+        <p className="text-sm text-white/70">No posts match the selected filter.</p>
       )}
     </div>
   );
