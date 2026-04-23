@@ -28,7 +28,7 @@ export default function Footer() {
     <footer style={{ background: "linear-gradient(180deg, #b84418 0%, #8B2E14 100%)" }} className="border-t border-white/15">
       <div className="mx-auto max-w-7xl px-8 py-16">
         {/* Top row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 pb-12 border-b border-white/15">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 pb-12">
           {/* Brand column */}
           <div className="flex flex-col gap-4 lg:col-span-1">
             <span className="font-display text-lg font-semibold text-white">
@@ -77,11 +77,12 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom row */}
-        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/35">
-          <p>© {new Date().getFullYear()} Mohammed Mutahar. All rights reserved.</p>
-          <p>Built with Next.js &amp; Tailwind CSS</p>
-        </div>
+      </div>
+
+      {/* Bottom bar — full width */}
+      <div className="border-t border-white/15 w-full px-10 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/35">
+        <p>© {new Date().getFullYear()} Mohammed Mutahar. All rights reserved.</p>
+        <p>Built with Next.js &amp; Tailwind CSS</p>
       </div>
     </footer>
   );

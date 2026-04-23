@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import type { Project } from "@/types";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import RelatedCarousel from "@/components/projects/RelatedCarousel";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -142,29 +143,9 @@ export default async function ProjectDetailPage({ params }: Props) {
           </article>
         )}
 
-        {/* Related Projects */}
+        {/* Related Projects — carousel, hidden if none */}
         {related && related.length > 0 && (
-          <section className="flex flex-col gap-6 pt-8 border-t border-white/20">
-            <h2 className="font-display text-2xl font-semibold text-white">
-              Related Projects
-            </h2>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-              {(related as Partial<Project>[]).map((r) => (
-                <Link
-                  key={r.id}
-                  href={`/projects/${r.slug}`}
-                  className="rounded-2xl border border-white/20 bg-white/10 p-5 hover:bg-white/20 hover:border-white/40 transition-all flex flex-col gap-2"
-                >
-                  <h3 className="font-medium text-sm text-white">{r.title}</h3>
-                  {r.description && (
-                    <p className="text-xs text-white/60 line-clamp-2 leading-relaxed">
-                      {r.description}
-                    </p>
-                  )}
-                </Link>
-              ))}
-            </div>
-          </section>
+          <RelatedCarousel projects={related as Partial<Project>[] as any} />
         )}
       </div>
     </div>

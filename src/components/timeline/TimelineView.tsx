@@ -51,21 +51,21 @@ export default function TimelineView({ entries }: Props) {
   }
 
   return (
-    <div className="flex flex-col gap-10">
-      {/* Category filters */}
-      <div className="flex flex-wrap gap-2">
+    <div className="flex flex-col gap-5 mx-auto w-full max-w-2xl">
+      {/* Category filters — compact, tight to the section divider above */}
+      <div className="flex flex-wrap gap-1.5">
         {ALL_CATEGORIES.map((cat) => (
           <button
             key={cat}
             onClick={() => toggleCategory(cat)}
-            className={`flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
+            className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs transition-colors ${
               activeCategories.has(cat)
-                ? "bg-white text-[#a84010]"
-                : "bg-white/15 text-white hover:bg-white/25"
+                ? "bg-white text-[#a84010] font-medium"
+                : "bg-white/15 text-white/80 hover:bg-white/25"
             }`}
           >
             <span
-              className="w-2 h-2 rounded-full shrink-0"
+              className="w-1.5 h-1.5 rounded-full shrink-0"
               style={{ backgroundColor: CATEGORY_COLORS[cat] }}
             />
             {CATEGORY_LABELS[cat]}

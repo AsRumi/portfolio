@@ -24,14 +24,14 @@ function MountainStrip() {
       <defs>
         {/* Amber left → deep rust right — matches the original hero gradient tone */}
         <linearGradient id="nav-grad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%"   stopColor="#F5A623" stopOpacity="1" />
-          <stop offset="40%"  stopColor="#D4622A" stopOpacity="1" />
+          <stop offset="0%" stopColor="#F5A623" stopOpacity="1" />
+          <stop offset="40%" stopColor="#D4622A" stopOpacity="1" />
           <stop offset="100%" stopColor="#5C1A0A" stopOpacity="1" />
         </linearGradient>
         {/* Mask that fades mountains in from ~55% to 100% */}
         <linearGradient id="mountain-fade" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="50%"  stopColor="white" stopOpacity="0" />
-          <stop offset="72%"  stopColor="white" stopOpacity="1" />
+          <stop offset="50%" stopColor="white" stopOpacity="0" />
+          <stop offset="72%" stopColor="white" stopOpacity="1" />
           <stop offset="100%" stopColor="white" stopOpacity="1" />
         </linearGradient>
         <mask id="fade-mask">
@@ -82,7 +82,7 @@ export default function Header() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 overflow-hidden ${
         isHome
           ? scrolled
-            ? "bg-[#FAF3E0] border-b border-[#E8D9C0] shadow-sm"
+            ? "bg-[#2B1005] border-b border-[#2B1005] shadow-sm"
             : "bg-transparent border-b border-transparent"
           : ""
       }`}
@@ -94,9 +94,9 @@ export default function Header() {
         {/* Logo — dark on home-scrolled, white otherwise */}
         <Link
           href="/"
-          className={`font-display text-lg font-semibold tracking-tight transition-colors ${
-            homeScrolled ? "text-[#3D2B1F]" : "text-white"
-          }`}
+          className={`font-display font-semibold tracking-tight transition-colors ${
+            isHome && !scrolled ? "text-2xl" : "text-lg"
+          } ${homeScrolled ? "text-white" : "text-white"}`}
         >
           Mohammed Mutahar
         </Link>
@@ -111,10 +111,10 @@ export default function Header() {
                 homeScrolled
                   ? pathname === link.href
                     ? "text-[#3D2B1F] font-medium"
-                    : "text-[#7A6152] hover:text-[#3D2B1F]"
+                    : "text-white hover:text-[#b3a49b]"
                   : pathname === link.href
-                  ? "text-white font-medium"
-                  : "text-white/75 hover:text-white"
+                    ? "text-white font-medium"
+                    : "text-white/75 hover:text-white"
               }`}
             >
               {link.label}
@@ -126,7 +126,7 @@ export default function Header() {
             href="#"
             className={`text-sm px-4 py-1.5 rounded border transition-colors ${
               homeScrolled
-                ? "border-[#3D2B1F] text-[#3D2B1F] hover:bg-[#3D2B1F] hover:text-[#FAF3E0]"
+                ? "border-white text-white hover:bg-[#b3a49b] hover:text-white"
                 : "border-white/60 text-white hover:border-white hover:bg-white/15"
             }`}
           >

@@ -84,8 +84,9 @@ export default async function HomePage() {
             </h1>
             <p className="text-base text-white/75 leading-relaxed max-w-lg">
               Master&apos;s student in Computer Science (AI/ML) at Northeastern
-              University. I build production-grade AI systems at the intersection of
-              computer vision, multimodal learning, and generative AI.
+              University. I build production-grade AI systems at the
+              intersection of computer vision, multimodal learning, and
+              generative AI.
             </p>
           </div>
 
@@ -96,23 +97,31 @@ export default async function HomePage() {
               className="group inline-flex items-center gap-2 text-white text-sm border-b border-white/40 pb-0.5 hover:border-white transition-colors"
             >
               View Projects
-              <span className="transition-transform group-hover:translate-x-1">→</span>
+              <span className="transition-transform group-hover:translate-x-1">
+                →
+              </span>
             </Link>
             <Link
               href="/research"
               className="group inline-flex items-center gap-2 text-white text-sm border-b border-white/40 pb-0.5 hover:border-white transition-colors"
             >
               Read Research
-              <span className="transition-transform group-hover:translate-x-1">→</span>
+              <span className="transition-transform group-hover:translate-x-1">
+                →
+              </span>
             </Link>
           </div>
         </div>
       </section>
 
       {/* ─── Orange body starts here ──────────────────────────────────── */}
-      <div className="flex flex-col" style={{ background: "linear-gradient(180deg, #8B2E14 0%, #a84010 15%, #d6652a 40%, #c45520 70%, #b84418 100%)" }}>
-
-
+      <div
+        className="flex flex-col"
+        style={{
+          background:
+            "linear-gradient(180deg, #8B2E14 0%, #a84010 15%, #d6652a 40%, #c45520 70%, #b84418 100%)",
+        }}
+      >
         {/* ─── Featured Projects ──────────────────────────────────────── */}
         <section className="mx-auto max-w-7xl px-8 py-24 flex flex-col gap-12 w-full">
           <div className="flex items-end justify-between">
@@ -129,7 +138,9 @@ export default async function HomePage() {
               className="group inline-flex items-center gap-1.5 text-sm text-white/70 border-b border-white/30 pb-0.5 hover:text-white hover:border-white transition-colors"
             >
               All projects
-              <span className="transition-transform group-hover:translate-x-1">→</span>
+              <span className="transition-transform group-hover:translate-x-1">
+                →
+              </span>
             </Link>
           </div>
 
@@ -202,7 +213,9 @@ export default async function HomePage() {
                 className="group inline-flex items-center gap-1.5 text-sm text-white/70 border-b border-white/30 pb-0.5 hover:text-white hover:border-white transition-colors"
               >
                 All posts
-                <span className="transition-transform group-hover:translate-x-1">→</span>
+                <span className="transition-transform group-hover:translate-x-1">
+                  →
+                </span>
               </Link>
             </div>
 
@@ -229,14 +242,19 @@ export default async function HomePage() {
                     <div className="flex items-center gap-4 shrink-0">
                       <span className="text-xs text-white/50">
                         {post.published_at
-                          ? new Date(post.published_at).toLocaleDateString("en-US", {
-                              month: "short",
-                              day: "numeric",
-                              year: "numeric",
-                            })
+                          ? new Date(post.published_at).toLocaleDateString(
+                              "en-US",
+                              {
+                                month: "short",
+                                day: "numeric",
+                                year: "numeric",
+                              },
+                            )
                           : "Draft"}
                       </span>
-                      <span className="text-xs text-white/50 group-hover:text-white transition-colors">→</span>
+                      <span className="text-xs text-white/50 group-hover:text-white transition-colors">
+                        →
+                      </span>
                     </div>
                   </Link>
                 ))}
