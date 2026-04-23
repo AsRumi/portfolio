@@ -21,7 +21,7 @@ export default async function ResearchPage() {
   return (
     <div className="min-h-screen" style={{ background: "linear-gradient(180deg, #d6652a 0%, #c45520 40%, #b84418 100%)" }}>
       <div className="border-b border-white/20">
-        <div className="mx-auto max-w-5xl px-8 pt-32 pb-12 flex flex-col gap-4">
+        <div className="w-full px-10 pt-32 pb-12 flex flex-col gap-4">
           <p className="text-xs font-medium text-white/60 uppercase tracking-widest">
             Publications
           </p>
@@ -35,7 +35,7 @@ export default async function ResearchPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-5xl px-8 py-16">
+      <div className="w-full px-10 py-16">
         <PaperList papers={papers as ResearchPaper[] ?? []} allTags={allTags} />
       </div>
     </div>

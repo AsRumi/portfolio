@@ -11,7 +11,7 @@ export default function Footer() {
         style={{ background: "#8B2E14" }}
         className="border-t border-white/15"
       >
-        <div className="mx-auto max-w-7xl px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
+        <div className="w-full px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
           <p>© {new Date().getFullYear()} Mohammed Mutahar. All rights reserved.</p>
           <div className="flex items-center gap-5 text-white/50">
             <a href="#" className="hover:text-white transition-colors">GitHub</a>

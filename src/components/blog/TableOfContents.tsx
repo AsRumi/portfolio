@@ -34,14 +34,14 @@ export default function TableOfContents({ content }: { content: string | null })
 
   return (
     <nav className="flex flex-col gap-1">
-      <p className="text-xs font-medium text-foreground mb-2 uppercase tracking-widest">
+      <p className="text-xs font-medium text-white/40 mb-3 uppercase tracking-widest">
         On this page
       </p>
       {headings.map((h, i) => (
         <a
           key={i}
           href={`#${h.id}`}
-          className={`text-xs text-muted-foreground hover:text-foreground transition-colors leading-relaxed ${
+          className={`text-xs text-white/50 hover:text-white transition-colors leading-relaxed py-0.5 ${
             h.level === 2 ? "pl-0" : h.level === 3 ? "pl-3" : "pl-0 font-medium"
           }`}
         >

@@ -48,63 +48,90 @@ export default async function BlogPostPage({ params }: Props) {
   const p = post as BlogPost;
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-16">
-      <div className="flex gap-12">
-
-        {/* Main content */}
-        <div className="flex-1 flex flex-col gap-8 min-w-0">
-          <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+    <div
+      className="min-h-screen"
+      style={{ background: "linear-gradient(180deg, #d6652a 0%, #c45520 40%, #b84418 100%)" }}
+    >
+      {/* Page header band */}
+      <div className="border-b border-white/20">
+        <div className="w-full px-10 pt-24 pb-8 flex flex-col gap-3">
+          <Link
+            href="/blog"
+            className="text-sm text-white/60 hover:text-white transition-colors w-fit"
+          >
             ← Back to Blog
           </Link>
 
-          {/* Post header */}
-          <div className="flex flex-col gap-4">
-            {p.cover_image_url && (
-              <img
-                src={p.cover_image_url}
-                alt={p.title}
-                className="w-full rounded-xl object-cover max-h-72"
-              />
+          {p.cover_image_url && (
+            <img
+              src={p.cover_image_url}
+              alt={p.title}
+              className="w-full rounded-2xl object-cover max-h-72"
+            />
+          )}
+
+          <h1 className="font-display text-4xl font-semibold text-white leading-tight max-w-4xl">
+            {p.title}
+          </h1>
+
+          <div className="flex flex-wrap items-center gap-4 text-sm text-white/55">
+            {p.published_at && (
+              <span>
+                {new Date(p.published_at).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
+              </span>
             )}
-            <h1 className="font-display text-5xl font-semibold leading-tight">{p.title}</h1>
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-              {p.published_at && (
-                <span>
-                  {new Date(p.published_at).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </span>
-              )}
-              <span>{estimateReadTime(p.content)}</span>
-            </div>
-            {p.tags && p.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {p.tags.map((tag) => (
-                  <span key={tag} className="rounded-full bg-muted px-3 py-1 text-xs text-muted-foreground">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
+            <span>{estimateReadTime(p.content)}</span>
           </div>
 
-          {/* Markdown body */}
-          {p.content && (
-            <article className="prose prose-stone max-w-none prose-headings:font-display prose-headings:text-foreground prose-headings:font-semibold prose-p:text-foreground prose-p:leading-relaxed prose-a:text-accent prose-a:no-underline hover:prose-a:underline prose-strong:text-foreground prose-code:text-foreground prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:before:content-none prose-code:after:content-none prose-blockquote:border-accent prose-blockquote:text-muted-foreground prose-li:text-foreground prose-img:rounded-xl">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{p.content}</ReactMarkdown>
-            </article>
+          {p.tags && p.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {p.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-full bg-white/15 px-3 py-1 text-xs text-white/80"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
           )}
         </div>
+      </div>
 
-        {/* TOC sidebar — hidden on mobile */}
-        <aside className="hidden lg:block w-56 shrink-0">
-          <div className="sticky top-8">
-            <TableOfContents content={p.content} />
+      {/* Body */}
+      <div className="w-full px-10 py-14">
+        <div className="flex gap-16">
+          {/* Markdown content */}
+          <div className="flex-1 min-w-0">
+            {p.content && (
+              <article className="prose max-w-none
+                prose-headings:font-display prose-headings:font-semibold prose-headings:text-white prose-headings:tracking-tight
+                prose-p:text-white/80 prose-p:leading-relaxed
+                prose-a:text-white prose-a:underline prose-a:decoration-white/40 hover:prose-a:decoration-white
+                prose-strong:text-white
+                prose-code:text-white prose-code:bg-white/15 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:text-sm prose-code:before:content-none prose-code:after:content-none
+                prose-pre:bg-white/10 prose-pre:border prose-pre:border-white/20
+                prose-blockquote:border-white/40 prose-blockquote:text-white/65
+                prose-li:text-white/80
+                prose-img:rounded-xl
+                prose-hr:border-white/20
+              ">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{p.content}</ReactMarkdown>
+              </article>
+            )}
           </div>
-        </aside>
 
+          {/* TOC sidebar */}
+          <aside className="hidden lg:block w-52 shrink-0">
+            <div className="sticky top-24">
+              <TableOfContents content={p.content} />
+            </div>
+          </aside>
+        </div>
       </div>
     </div>
   );
