@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import type { TimelineEntry } from "@/types";
 
 const CATEGORY_COLORS: Record<TimelineEntry["category"], string> = {
@@ -52,8 +53,14 @@ export default function TimelineView({ entries }: Props) {
 
   return (
     <div className="flex flex-col gap-5 mx-auto w-full max-w-2xl">
-      {/* Category filters — compact, tight to the section divider above */}
-      <div className="flex flex-wrap gap-1.5">
+      {/* Category filters */}
+      <motion.div
+        className="flex flex-wrap gap-1.5"
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-40px" }}
+        transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+      >
         {ALL_CATEGORIES.map((cat) => (
           <button
             key={cat}
@@ -71,15 +78,26 @@ export default function TimelineView({ entries }: Props) {
             {CATEGORY_LABELS[cat]}
           </button>
         ))}
-      </div>
+      </motion.div>
 
       {filtered.length > 0 ? (
         <div className="relative flex flex-col gap-0">
           {/* Vertical line */}
           <div className="absolute left-3 top-2 bottom-2 w-px bg-white/25" />
 
-          {filtered.map((entry) => (
-            <div key={entry.id} className="relative flex gap-8 pb-10">
+          {filtered.map((entry, i) => (
+            <motion.div
+              key={entry.id}
+              className="relative flex gap-8 pb-10"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{
+                delay: 0.1 + i * 0.12,
+                duration: 1.0,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+            >
               {/* Dot */}
               <div
                 className="relative z-10 mt-1.5 w-6 h-6 rounded-full shrink-0 border-2 border-white/30 shadow-sm"
@@ -127,7 +145,7 @@ export default function TimelineView({ entries }: Props) {
                   </p>
                 )}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       ) : (

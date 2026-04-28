@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import type { ResearchPaper } from "@/types";
 
 type Props = {
@@ -27,7 +28,13 @@ export default function PaperList({ papers, allTags }: Props) {
   return (
     <div className="flex flex-col gap-10">
       {allTags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <motion.div
+          className="flex flex-wrap gap-2"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+        >
           <button
             onClick={() => setActiveTag(null)}
             className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
@@ -51,17 +58,23 @@ export default function PaperList({ papers, allTags }: Props) {
               {tag}
             </button>
           ))}
-        </div>
+        </motion.div>
       )}
 
       {filtered.length > 0 ? (
         <div className="flex flex-col">
           {filtered.map((paper, i) => (
-            <div
+            <motion.div
               key={paper.id}
-              className={`py-8 flex flex-col gap-4 ${
-                i !== 0 ? "border-t border-white/20" : ""
-              }`}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{
+                delay: 0.1 + i * 0.12,
+                duration: 1.0,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className={`py-8 flex flex-col gap-4 ${i !== 0 ? "border-t border-white/20" : ""}`}
             >
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
                 <h3 className="font-medium text-white leading-snug max-w-2xl">
@@ -104,9 +117,14 @@ export default function PaperList({ papers, allTags }: Props) {
                     {expandedIds.has(paper.id) ? "Hide abstract ↑" : "Show abstract ↓"}
                   </button>
                   {expandedIds.has(paper.id) && (
-                    <p className="mt-4 text-sm text-white/65 leading-relaxed border-l-2 border-white/30 pl-4">
+                    <motion.p
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      className="mt-4 text-sm text-white/65 leading-relaxed border-l-2 border-white/30 pl-4"
+                    >
                       {paper.abstract}
-                    </p>
+                    </motion.p>
                   )}
                 </div>
               )}
@@ -133,7 +151,7 @@ export default function PaperList({ papers, allTags }: Props) {
                   </a>
                 )}
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       ) : (

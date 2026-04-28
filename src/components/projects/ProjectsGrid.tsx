@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import type { Project } from "@/types";
 
 type Props = {
@@ -18,9 +19,14 @@ export default function ProjectsGrid({ projects, allTags }: Props) {
 
   return (
     <div className="flex flex-col gap-10">
-      {/* Tag filter */}
       {allTags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
+        <motion.div
+          className="flex flex-wrap gap-2"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-60px" }}
+          transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+        >
           <button
             onClick={() => setActiveTag(null)}
             className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
@@ -44,78 +50,80 @@ export default function ProjectsGrid({ projects, allTags }: Props) {
               {tag}
             </button>
           ))}
-        </div>
+        </motion.div>
       )}
 
       {filtered.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filtered.map((project) => (
-            <Link
+          {filtered.map((project, i) => (
+            <motion.div
               key={project.id}
-              href={`/projects/${project.slug}`}
-              className="group flex flex-col gap-4 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-sm p-5 hover:bg-white/20 hover:border-white/40 transition-all"
+              initial={{ opacity: 0, y: 32 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{
+                delay: 0.1 + (i % 3) * 0.13,
+                duration: 1.0,
+                ease: [0.16, 1, 0.3, 1],
+              }}
             >
-              <div className="aspect-video w-full rounded-xl bg-white/10 overflow-hidden flex items-center justify-center text-xs text-white/50">
-                {project.thumbnail_url ? (
-                  <img
-                    src={project.thumbnail_url}
-                    alt={project.title}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  "No thumbnail"
-                )}
-              </div>
-
-              <div className="flex flex-col gap-2 flex-1">
-                <h3 className="font-medium text-white group-hover:text-white/80 transition-colors">
-                  {project.title}
-                </h3>
-                {project.description && (
-                  <p className="text-sm text-white/65 line-clamp-2 leading-relaxed">
-                    {project.description}
-                  </p>
-                )}
-              </div>
-
-              {project.tags && project.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {project.tags.slice(0, 4).map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full bg-white/15 px-2.5 py-0.5 text-xs text-white/80"
-                    >
-                      {tag}
-                    </span>
-                  ))}
+              <Link
+                href={`/projects/${project.slug}`}
+                className="group flex flex-col gap-4 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-sm p-5 hover:bg-white/20 hover:border-white/40 transition-all h-full"
+              >
+                <div className="aspect-video w-full rounded-xl bg-white/10 overflow-hidden flex items-center justify-center text-xs text-white/50">
+                  {project.thumbnail_url ? (
+                    <img
+                      src={project.thumbnail_url}
+                      alt={project.title}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    "No thumbnail"
+                  )}
                 </div>
-              )}
-
-              <div className="flex gap-4 text-xs text-white/60 pt-1 border-t border-white/15">
-                {project.demo_url && (
-                  <span
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.open(project.demo_url!, "_blank");
-                    }}
-                    className="hover:text-white transition-colors cursor-pointer"
-                  >
-                    Live Demo ↗
-                  </span>
+                <div className="flex flex-col gap-2 flex-1">
+                  <h3 className="font-medium text-white group-hover:text-white/80 transition-colors">
+                    {project.title}
+                  </h3>
+                  {project.description && (
+                    <p className="text-sm text-white/65 line-clamp-2 leading-relaxed">
+                      {project.description}
+                    </p>
+                  )}
+                </div>
+                {project.tags && project.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5">
+                    {project.tags.slice(0, 4).map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-full bg-white/15 px-2.5 py-0.5 text-xs text-white/80"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
                 )}
-                {project.github_url && (
-                  <span
-                    onClick={(e) => {
-                      e.preventDefault();
-                      window.open(project.github_url!, "_blank");
-                    }}
-                    className="hover:text-white transition-colors cursor-pointer"
-                  >
-                    GitHub ↗
-                  </span>
-                )}
-              </div>
-            </Link>
+                <div className="flex gap-4 text-xs text-white/60 pt-1 border-t border-white/15">
+                  {project.demo_url && (
+                    <span
+                      onClick={(e) => { e.preventDefault(); window.open(project.demo_url!, "_blank"); }}
+                      className="hover:text-white transition-colors cursor-pointer"
+                    >
+                      Live Demo ↗
+                    </span>
+                  )}
+                  {project.github_url && (
+                    <span
+                      onClick={(e) => { e.preventDefault(); window.open(project.github_url!, "_blank"); }}
+                      className="hover:text-white transition-colors cursor-pointer"
+                    >
+                      GitHub ↗
+                    </span>
+                  )}
+                </div>
+              </Link>
+            </motion.div>
           ))}
         </div>
       ) : (
