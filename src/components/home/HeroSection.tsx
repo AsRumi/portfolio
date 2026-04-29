@@ -72,37 +72,38 @@ export default function HeroSection() {
         />
       ))}
 
-      {/* Hero text — fades up after mountains settle */}
-      <motion.div
-        className="relative z-10 mx-auto max-w-7xl px-8 pt-48 pb-32 flex flex-col gap-8"
-        initial={{ opacity: 0, y: 24 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
-      >
+      {/* Hero text — each element enters independently, staggered after mountains */}
+      <div className="relative z-10 mx-auto max-w-7xl px-8 pt-48 pb-32 flex flex-col gap-8">
         <div className="flex flex-col gap-4 max-w-2xl">
+
+          {/* Eyebrow — fades in, no movement */}
           <motion.p
             className="text-sm font-medium text-white/60 uppercase tracking-widest"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 1.0, duration: 0.8 }}
+            transition={{ delay: 0.9, duration: 1.2, ease: "easeOut" }}
           >
             AI/ML Engineer &amp; Researcher
           </motion.p>
+
+          {/* Headline — rises from below with weight */}
           <motion.h1
             className="font-display text-6xl sm:text-8xl font-semibold text-white leading-[1.05]"
-            initial={{ opacity: 0, y: 16 }}
+            initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.05, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 1.05, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           >
             Building AI
             <br />
             that matters.
           </motion.h1>
+
+          {/* Body copy — softer, slightly later */}
           <motion.p
             className="text-base text-white/75 leading-relaxed max-w-lg"
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.15, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 1.3, duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
           >
             Master&apos;s student in Computer Science (AI/ML) at Northeastern
             University. I build production-grade AI systems at the
@@ -111,12 +112,12 @@ export default function HeroSection() {
           </motion.p>
         </div>
 
-        {/* CTA links */}
+        {/* CTA links — last to appear, just a clean fade */}
         <motion.div
           className="flex flex-wrap gap-8"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.3, duration: 0.8, ease: "easeOut" }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.55, duration: 1.0, ease: "easeOut" }}
         >
           <Link
             href="/projects"
@@ -133,7 +134,7 @@ export default function HeroSection() {
             <span className="transition-transform group-hover:translate-x-1">→</span>
           </Link>
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 }
