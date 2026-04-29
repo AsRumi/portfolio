@@ -67,12 +67,14 @@ export default function BlogGrid({ posts, allTags }: Props) {
               key={post.id}
               initial={{ opacity: 0, y: 32 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -5, scale: 1.02 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{
                 delay: 0.1 + (i % 3) * 0.13,
                 duration: 1.0,
                 ease: [0.16, 1, 0.3, 1],
               }}
+              whileTap={{ scale: 0.98 }}
             >
               <Link
                 href={`/blog/${post.slug}`}

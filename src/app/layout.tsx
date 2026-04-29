@@ -15,7 +15,10 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Mohammed Mutahar — AI/ML Engineer",
+  title: {
+    default: "Mutahar — AI Engineer",
+    template: "%s — Mutahar",
+  },
   description:
     "Personal portfolio of Mohammed Mutahar, AI/ML Engineer and Master's student at Northeastern University.",
 };

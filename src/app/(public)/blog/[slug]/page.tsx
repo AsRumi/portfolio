@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props) {
 
   if (!data) return { title: "Post Not Found" };
   return {
-    title: `${data.title} — Mohammed Mutahar`,
+    title: data.title,
     description: data.excerpt,
   };
 }
@@ -54,7 +54,7 @@ export default async function BlogPostPage({ params }: Props) {
     >
       {/* Page header band */}
       <div className="border-b border-white/20">
-        <div className="w-full px-10 pt-24 pb-8 flex flex-col gap-3">
+        <div className="w-full px-5 sm:px-10 pt-20 sm:pt-24 pb-6 sm:pb-8 flex flex-col gap-3">
           <Link
             href="/blog"
             className="text-sm text-white/60 hover:text-white transition-colors w-fit"
@@ -70,7 +70,7 @@ export default async function BlogPostPage({ params }: Props) {
             />
           )}
 
-          <h1 className="font-display text-4xl font-semibold text-white leading-tight max-w-4xl">
+          <h1 className="font-display text-3xl sm:text-4xl font-semibold text-white leading-tight max-w-4xl">
             {p.title}
           </h1>
 
@@ -103,7 +103,7 @@ export default async function BlogPostPage({ params }: Props) {
       </div>
 
       {/* Body */}
-      <div className="w-full px-10 py-14">
+      <div className="w-full px-5 sm:px-10 py-14">
         <div className="flex gap-16">
           {/* Markdown content */}
           <div className="flex-1 min-w-0">

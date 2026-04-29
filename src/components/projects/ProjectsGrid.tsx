@@ -60,12 +60,15 @@ export default function ProjectsGrid({ projects, allTags }: Props) {
               key={project.id}
               initial={{ opacity: 0, y: 32 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -5, scale: 1.02 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{
-                delay: 0.1 + (i % 3) * 0.13,
-                duration: 1.0,
-                ease: [0.16, 1, 0.3, 1],
+                default: { delay: 0.1 + (i % 3) * 0.13, duration: 1.0, ease: [0.16, 1, 0.3, 1] },
+                opacity: { delay: 0.1 + (i % 3) * 0.13, duration: 1.0 },
+                y: { delay: 0.1 + (i % 3) * 0.13, duration: 1.0, ease: [0.16, 1, 0.3, 1] },
+                scale: { duration: 0.2, ease: "easeOut", delay: 0 },
               }}
+              whileTap={{ scale: 0.98 }}
             >
               <Link
                 href={`/projects/${project.slug}`}

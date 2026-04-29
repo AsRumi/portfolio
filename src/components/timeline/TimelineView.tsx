@@ -98,6 +98,7 @@ export default function TimelineView({ entries }: Props) {
                 ease: [0.16, 1, 0.3, 1],
               }}
             >
+
               {/* Dot */}
               <div
                 className="relative z-10 mt-1.5 w-6 h-6 rounded-full shrink-0 border-2 border-white/30 shadow-sm"
@@ -107,7 +108,11 @@ export default function TimelineView({ entries }: Props) {
               />
 
               {/* Content card */}
-              <div className="flex flex-col gap-2 flex-1 bg-white/10 border border-white/20 rounded-2xl p-5 hover:bg-white/20 hover:border-white/35 transition-colors backdrop-blur-sm">
+              <motion.div
+                whileHover={{ y: -3, scale: 1.01 }}
+                transition={{ duration: 0.2, ease: "easeOut" }}
+                className="flex flex-col gap-2 flex-1 bg-white/10 border border-white/20 rounded-2xl p-5 hover:bg-white/20 hover:border-white/35 transition-colors backdrop-blur-sm"
+              >
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="font-medium text-white">
                     {entry.related_url ? (
@@ -144,7 +149,7 @@ export default function TimelineView({ entries }: Props) {
                     {entry.description}
                   </p>
                 )}
-              </div>
+              </motion.div>
             </motion.div>
           ))}
         </div>

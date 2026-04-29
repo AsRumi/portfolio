@@ -35,7 +35,7 @@ export default async function HomePage() {
         }}
       >
         {/* ─── Featured Projects ──────────────────────────────────────── */}
-        <section className="mx-auto max-w-7xl px-8 py-24 flex flex-col gap-12 w-full">
+        <section className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24 flex flex-col gap-10 sm:gap-12 w-full">
           <FadeInView className="flex items-end justify-between">
             <div className="flex flex-col gap-2">
               <p className="text-xs font-medium text-white/50 uppercase tracking-widest">
@@ -59,7 +59,7 @@ export default async function HomePage() {
           {featuredProjects && featuredProjects.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {(featuredProjects as Project[]).map((project, i) => (
-                <FadeInView key={project.id} delay={i * 0.08}>
+                <FadeInView key={project.id} delay={i * 0.08} hover>
                   <Link
                     href={`/projects/${project.slug}`}
                     className="group flex flex-col gap-4 rounded-2xl border border-white/20 bg-white/10 backdrop-blur-sm p-5 hover:bg-white/20 hover:border-white/40 transition-all h-full"
@@ -111,7 +111,7 @@ export default async function HomePage() {
 
         {/* ─── Latest Writing ─────────────────────────────────────────── */}
         <section className="border-t border-white/15">
-          <div className="mx-auto max-w-7xl px-8 py-24 flex flex-col gap-12 w-full">
+          <div className="mx-auto max-w-7xl px-5 sm:px-8 py-16 sm:py-24 flex flex-col gap-10 sm:gap-12 w-full">
             <FadeInView className="flex items-end justify-between">
               <div className="flex flex-col gap-2">
                 <p className="text-xs font-medium text-white/50 uppercase tracking-widest">

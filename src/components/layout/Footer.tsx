@@ -11,7 +11,7 @@ export default function Footer() {
         style={{ background: "#8B2E14" }}
         className="border-t border-white/15"
       >
-        <div className="w-full px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
+        <div className="w-full px-5 sm:px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
           <p>© {new Date().getFullYear()} Mohammed Mutahar. All rights reserved.</p>
           <div className="flex items-center gap-5 text-white/50">
             <a href="#" className="hover:text-white transition-colors">GitHub</a>
@@ -80,7 +80,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar — full width */}
-      <div className="border-t border-white/15 w-full px-10 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/35">
+      <div className="border-t border-white/15 w-full px-5 sm:px-10 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/35">
         <p>© {new Date().getFullYear()} Mohammed Mutahar. All rights reserved.</p>
         <p>Built with Next.js &amp; Tailwind CSS</p>
       </div>
