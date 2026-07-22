@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { THEMES } from "@/lib/themes";
+import { useHomeTheme } from "@/lib/theme-context";
 
 const navLinks = [
   { href: "/projects", label: "Projects" },
@@ -56,6 +58,10 @@ export default function Header() {
   const pathname = usePathname();
   const isHome = pathname === "/";
 
+  // Mood published by the home page (sunset on every other route).
+  const { themeId } = useHomeTheme();
+  const themed = THEMES[themeId];
+
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -93,10 +99,20 @@ export default function Header() {
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 overflow-hidden ${
           isHome
             ? scrolled
-              ? "bg-[#2B1005] border-b border-[#2B1005] shadow-sm"
-              : "bg-transparent border-b border-transparent"
+              ? "border-b shadow-sm"
+              : "border-b border-transparent"
             : ""
         }`}
+        // Scrolled home header takes the active mood's solid background. The
+        // `transition-all` above animates the recolor when the mood changes.
+        style={
+          isHome && scrolled
+            ? {
+                backgroundColor: themed.headerScrolledBg,
+                borderColor: themed.headerScrolledBg,
+              }
+            : undefined
+        }
       >
         {!isHome && <MountainStrip />}
 
@@ -177,10 +193,7 @@ export default function Header() {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
             className="fixed inset-0 z-40 md:hidden"
-            style={{
-              background:
-                "linear-gradient(180deg, #5C1A0A 0%, #8B2E14 50%, #b84418 100%)",
-            }}
+            style={{ background: themed.menuGradient }}
           >
             <motion.nav
               initial={{ opacity: 0, y: -10 }}

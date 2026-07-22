@@ -7,6 +7,7 @@ import { slugify } from "@/lib/slugify";
 import type { BlogPost } from "@/types";
 import MarkdownEditor from "./MarkdownEditor";
 import FileUploader from "./FileUploader";
+import RolesCheckboxGroup from "./RolesCheckboxGroup";
 
 type Props = {
   initial?: Partial<BlogPost>;
@@ -21,6 +22,7 @@ export default function BlogPostForm({ initial = {}, mode }: Props) {
   const [content, setContent] = useState(initial.content ?? "");
   const [coverImageUrl, setCoverImageUrl] = useState(initial.cover_image_url ?? "");
   const [tags, setTags] = useState(initial.tags?.join(", ") ?? "");
+  const [roles, setRoles] = useState<string[]>(initial.roles ?? []);
   const [featured, setFeatured] = useState(initial.featured ?? false);
   const [status, setStatus] = useState<"published" | "draft">(initial.status ?? "draft");
   const [publishedAt, setPublishedAt] = useState(
@@ -47,6 +49,7 @@ export default function BlogPostForm({ initial = {}, mode }: Props) {
       content: content || null,
       cover_image_url: coverImageUrl || null,
       tags: tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
+      roles,
       featured,
       status,
       // Set published_at to now when first publishing if not already set
@@ -107,6 +110,10 @@ export default function BlogPostForm({ initial = {}, mode }: Props) {
 
       <Field label="Tags (comma-separated)">
         <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="AI, Research, Tutorial" className={inputClass} />
+      </Field>
+
+      <Field label="Show under roles">
+        <RolesCheckboxGroup value={roles} onChange={setRoles} />
       </Field>
 
       <Field label="Cover Image">

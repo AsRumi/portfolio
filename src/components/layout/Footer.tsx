@@ -1,9 +1,17 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
+import { THEMES } from "@/lib/themes";
+import { useHomeTheme } from "@/lib/theme-context";
 
 export default function Footer() {
   const isHome = usePathname() === "/";
+
+  // Mood published by the home page. Only the home footer is themed; the compact
+  // footer on other routes stays sunset (those routes never leave the default).
+  const { themeId } = useHomeTheme();
+  const isMidnight = themeId === "midnight";
 
   if (!isHome) {
     return (
@@ -25,7 +33,20 @@ export default function Footer() {
   }
 
   return (
-    <footer style={{ background: "linear-gradient(180deg, #b84418 0%, #8B2E14 100%)" }} className="border-t border-white/15">
+    <footer className="relative border-t border-white/15">
+      {/* Sunset base + midnight crossfade, matching the hero and body above. */}
+      <div
+        className="absolute inset-0"
+        style={{ background: THEMES.sunset.footerGradient }}
+      />
+      <motion.div
+        className="absolute inset-0"
+        initial={false}
+        animate={{ opacity: isMidnight ? 1 : 0 }}
+        transition={{ duration: 0.9, ease: "easeOut" }}
+        style={{ background: THEMES.midnight.footerGradient }}
+      />
+      <div className="relative z-10">
       <div className="mx-auto max-w-7xl px-8 py-16">
         {/* Top row */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 pb-12">
@@ -83,6 +104,7 @@ export default function Footer() {
       <div className="border-t border-white/15 w-full px-5 sm:px-10 py-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/35">
         <p>© {new Date().getFullYear()} Mohammed Mutahar. All rights reserved.</p>
         <p>Built with Next.js &amp; Tailwind CSS</p>
+      </div>
       </div>
     </footer>
   );

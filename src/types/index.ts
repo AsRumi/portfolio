@@ -1,3 +1,5 @@
+// `roles` holds persona IDs from src/lib/personas.ts (e.g. ["ai-engineer"]).
+// Empty/null = shown under every persona on the home page.
 export type Project = {
   id: string;
   title: string;
@@ -5,6 +7,7 @@ export type Project = {
   description: string | null;
   content: string | null;
   tags: string[] | null;
+  roles: string[] | null;
   demo_url: string | null;
   github_url: string | null;
   thumbnail_url: string | null;
@@ -22,6 +25,7 @@ export type BlogPost = {
   content: string | null;
   cover_image_url: string | null;
   tags: string[] | null;
+  roles: string[] | null;
   featured: boolean;
   status: "published" | "draft";
   published_at: string | null;
@@ -39,6 +43,7 @@ export type ResearchPaper = {
   pdf_url: string | null;
   external_url: string | null;
   tags: string[] | null;
+  roles: string[] | null;
   created_at: string;
 };
 

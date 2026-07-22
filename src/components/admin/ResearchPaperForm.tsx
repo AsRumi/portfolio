@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 import type { ResearchPaper } from "@/types";
 import FileUploader from "./FileUploader";
+import RolesCheckboxGroup from "./RolesCheckboxGroup";
 
 type Props = {
   initial?: Partial<ResearchPaper>;
@@ -21,6 +22,7 @@ export default function ResearchPaperForm({ initial = {}, mode }: Props) {
   const [pdfUrl, setPdfUrl] = useState(initial.pdf_url ?? "");
   const [externalUrl, setExternalUrl] = useState(initial.external_url ?? "");
   const [tags, setTags] = useState(initial.tags?.join(", ") ?? "");
+  const [roles, setRoles] = useState<string[]>(initial.roles ?? []);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -39,6 +41,7 @@ export default function ResearchPaperForm({ initial = {}, mode }: Props) {
       pdf_url: pdfUrl || null,
       external_url: externalUrl || null,
       tags: tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
+      roles,
     };
 
     let err;
@@ -91,6 +94,15 @@ export default function ResearchPaperForm({ initial = {}, mode }: Props) {
 
       <Field label="Tags (comma-separated)">
         <input value={tags} onChange={(e) => setTags(e.target.value)} placeholder="Medical Imaging, Deep Learning" className={inputClass} />
+      </Field>
+
+      <Field label="Show under roles">
+        <RolesCheckboxGroup value={roles} onChange={setRoles} />
+        <p className="text-xs text-muted-foreground">
+          Note: papers only appear on the home page under the “ML Engineer &amp;
+          Researcher” role. They always show on the Research page regardless of
+          roles.
+        </p>
       </Field>
 
       <Field label="PDF">

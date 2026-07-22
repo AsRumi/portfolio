@@ -7,6 +7,7 @@ import { slugify } from "@/lib/slugify";
 import type { Project } from "@/types";
 import MarkdownEditor from "./MarkdownEditor";
 import FileUploader from "./FileUploader";
+import RolesCheckboxGroup from "./RolesCheckboxGroup";
 
 type Props = {
   initial?: Partial<Project>;
@@ -20,6 +21,7 @@ export default function ProjectForm({ initial = {}, mode }: Props) {
   const [description, setDescription] = useState(initial.description ?? "");
   const [content, setContent] = useState(initial.content ?? "");
   const [tags, setTags] = useState(initial.tags?.join(", ") ?? "");
+  const [roles, setRoles] = useState<string[]>(initial.roles ?? []);
   const [demoUrl, setDemoUrl] = useState(initial.demo_url ?? "");
   const [githubUrl, setGithubUrl] = useState(initial.github_url ?? "");
   const [thumbnailUrl, setThumbnailUrl] = useState(initial.thumbnail_url ?? "");
@@ -45,6 +47,7 @@ export default function ProjectForm({ initial = {}, mode }: Props) {
       description: description || null,
       content: content || null,
       tags: tags ? tags.split(",").map((t) => t.trim()).filter(Boolean) : [],
+      roles,
       demo_url: demoUrl || null,
       github_url: githubUrl || null,
       thumbnail_url: thumbnailUrl || null,
@@ -127,6 +130,11 @@ export default function ProjectForm({ initial = {}, mode }: Props) {
           placeholder="PyTorch, FastAPI, Computer Vision"
           className={inputClass}
         />
+      </Field>
+
+      {/* Persona roles */}
+      <Field label="Show under roles">
+        <RolesCheckboxGroup value={roles} onChange={setRoles} />
       </Field>
 
       {/* URLs */}
