@@ -33,28 +33,28 @@ export const PERSONAS: Persona[] = [
     label: "AI Engineer",
     article: "an",
     tagline:
-      "Placeholder line about Mohammed as an AI Engineer — edit this in src/lib/personas.ts.",
+      "I have built and shipped production computer vision and generative AI systems, from image generation pipelines at Reap Studio to a local content detection tool using pretrained models and ONNX Runtime.",
   },
   {
     id: "ml-researcher",
     label: "ML Engineer & Researcher",
     article: "an",
     tagline:
-      "Placeholder line about Mohammed as an ML Engineer & Researcher — edit this in src/lib/personas.ts.",
+      "I've published research applying CNNs to radiology and designed ML systems where the model's job is to explain its predictions.",
   },
   {
     id: "data-scientist",
     label: "Data Scientist",
     article: "a",
     tagline:
-      "Placeholder line about Mohammed as a Data Scientist — edit this in src/lib/personas.ts.",
+      "I have worked with multimodal data pipelines, fusing webcam facial analysis, audio transcription, and computer vision signals in AffectSync, and structured sports data in HalfCourt, to engineer features, compare model architectures, and surface interpretable insights through SHAP-driven analysis.",
   },
   {
     id: "mlops",
     label: "ML Ops Developer",
     article: "an",
     tagline:
-      "Placeholder line about Mohammed as an ML Ops Developer — edit this in src/lib/personas.ts.",
+      "Currently deep in Triton GPU kernel programming and building LLM infrastructure, including a semantic caching layer over Redis and FAISS, aimed at cutting inference costs by a significant margin.",
   },
 ];
 
