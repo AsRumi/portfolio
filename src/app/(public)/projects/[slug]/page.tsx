@@ -121,7 +121,9 @@ export default async function ProjectDetailPage({ params }: Props) {
           <img
             src={p.thumbnail_url}
             alt={p.title}
-            className="w-full rounded-2xl object-cover max-h-96"
+            /* object-contain + auto width keeps the image's true aspect ratio;
+               mx-auto centers it since it no longer spans the full column */
+            className="mx-auto max-w-full max-h-[70vh] w-auto h-auto rounded-2xl object-contain"
           />
         )}
 
