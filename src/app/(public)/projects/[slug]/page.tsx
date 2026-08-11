@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
@@ -10,7 +11,7 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const supabase = await createClient();
   const { data } = await supabase
@@ -20,9 +21,26 @@ export async function generateMetadata({ params }: Props) {
     .single();
 
   if (!data) return { title: "Project Not Found" };
+
+  // The root layout declares a site-wide `openGraph` block, and Next merges into
+  // it rather than deriving it from `title`/`description` here. Without restating
+  // them a shared project link would pair this project's generated card image
+  // with the generic site headline.
+  const ogTitle = `${data.title} — Mutahar`;
+
   return {
     title: data.title,
     description: data.description,
+    openGraph: {
+      type: "article",
+      title: ogTitle,
+      description: data.description ?? undefined,
+      url: `/projects/${slug}`,
+    },
+    twitter: {
+      title: ogTitle,
+      description: data.description ?? undefined,
+    },
   };
 }
 

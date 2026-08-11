@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { THEMES } from "@/lib/themes";
 import { useHomeTheme } from "@/lib/theme-context";
+import { RESUME_URL, NEW_TAB_PROPS } from "@/lib/links";
 
 const navLinks = [
   { href: "/projects", label: "Projects" },
@@ -148,7 +149,8 @@ export default function Header() {
             ))}
 
             <a
-              href="#"
+              href={RESUME_URL}
+              {...NEW_TAB_PROPS}
               className={`text-sm px-4 py-1.5 rounded border transition-colors ${
                 homeScrolled
                   ? "border-white text-white hover:bg-[#b3a49b] hover:text-white"
@@ -220,7 +222,8 @@ export default function Header() {
                 </motion.div>
               ))}
               <motion.a
-                href="#"
+                href={RESUME_URL}
+                {...NEW_TAB_PROPS}
                 initial={{ opacity: 0, x: -16 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.15 + navLinks.length * 0.06, duration: 0.4 }}

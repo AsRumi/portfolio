@@ -4,6 +4,12 @@ import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { THEMES } from "@/lib/themes";
 import { useHomeTheme } from "@/lib/theme-context";
+import {
+  SOCIAL_LINKS,
+  RESUME_URL,
+  NEW_TAB_PROPS,
+  linkTargetProps,
+} from "@/lib/links";
 
 export default function Footer() {
   const isHome = usePathname() === "/";
@@ -22,10 +28,23 @@ export default function Footer() {
         <div className="w-full px-5 sm:px-10 py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/40">
           <p>© {new Date().getFullYear()} Mohammed Mutahar. All rights reserved.</p>
           <div className="flex items-center gap-5 text-white/50">
-            <a href="#" className="hover:text-white transition-colors">GitHub</a>
-            <a href="#" className="hover:text-white transition-colors">LinkedIn</a>
-            <a href="#" className="hover:text-white transition-colors">Google Scholar</a>
-            <a href="#" className="hover:text-white transition-colors">Resume ↗</a>
+            {SOCIAL_LINKS.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                {...linkTargetProps(link)}
+                className="hover:text-white transition-colors"
+              >
+                {link.label}
+              </a>
+            ))}
+            <a
+              href={RESUME_URL}
+              {...NEW_TAB_PROPS}
+              className="hover:text-white transition-colors"
+            >
+              Resume ↗
+            </a>
           </div>
         </div>
       </footer>
@@ -80,10 +99,16 @@ export default function Footer() {
               Connect
             </p>
             <nav className="flex flex-col gap-2.5 text-sm text-white/65">
-              <a href="#" className="hover:text-white transition-colors">GitHub ↗</a>
-              <a href="#" className="hover:text-white transition-colors">LinkedIn ↗</a>
-              <a href="#" className="hover:text-white transition-colors">Google Scholar ↗</a>
-              <a href="mailto:mutahar.mo@northeastern.edu" className="hover:text-white transition-colors">Email ↗</a>
+              {SOCIAL_LINKS.map((link) => (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  {...linkTargetProps(link)}
+                  className="hover:text-white transition-colors"
+                >
+                  {link.label} ↗
+                </a>
+              ))}
             </nav>
           </div>
 
@@ -93,7 +118,13 @@ export default function Footer() {
               Resources
             </p>
             <nav className="flex flex-col gap-2.5 text-sm text-white/65">
-              <a href="#" className="hover:text-white transition-colors">Resume (PDF) ↗</a>
+              <a
+                href={RESUME_URL}
+                {...NEW_TAB_PROPS}
+                className="hover:text-white transition-colors"
+              >
+                Resume (PDF) ↗
+              </a>
             </nav>
           </div>
         </div>

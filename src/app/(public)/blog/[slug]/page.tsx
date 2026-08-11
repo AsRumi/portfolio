@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/server";
@@ -10,19 +11,36 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const supabase = await createClient();
   const { data } = await supabase
     .from("blog_posts")
-    .select("title, excerpt")
+    .select("title, excerpt, published_at")
     .eq("slug", slug)
     .single();
 
   if (!data) return { title: "Post Not Found" };
+
+  // See the note in the project detail page: the root layout's `openGraph` block
+  // is merged into, not regenerated, so these have to be restated per post.
+  const ogTitle = `${data.title} — Mutahar`;
+
   return {
     title: data.title,
     description: data.excerpt,
+    openGraph: {
+      type: "article",
+      title: ogTitle,
+      description: data.excerpt ?? undefined,
+      url: `/blog/${slug}`,
+      publishedTime: data.published_at ?? undefined,
+      authors: ["Mohammed Mutahar"],
+    },
+    twitter: {
+      title: ogTitle,
+      description: data.excerpt ?? undefined,
+    },
   };
 }
 
