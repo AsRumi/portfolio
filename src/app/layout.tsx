@@ -23,12 +23,19 @@ const SITE_DESCRIPTION =
 // including the generated opengraph-image routes — is expanded against this, and
 // crawlers reject relative og:image values, so it has to be absolute.
 //
-// Set NEXT_PUBLIC_SITE_URL in the Vercel dashboard. VERCEL_URL is Vercel's own
-// per-deployment hostname and covers preview builds where the var isn't set.
+// Precedence, most to least specific:
+//   1. NEXT_PUBLIC_SITE_URL      — set this to the custom domain once it's live.
+//   2. VERCEL_PROJECT_PRODUCTION_URL — Vercel's *stable* production hostname, so
+//      production is correct even before step 1 is configured.
+//   3. VERCEL_URL                — the per-deployment hostname; the only one that
+//      identifies a preview build uniquely.
+//   4. localhost                 — development.
+const vercelHost =
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ?? process.env.VERCEL_URL;
+
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null) ??
-  "http://localhost:3000";
+  (vercelHost ? `https://${vercelHost}` : "http://localhost:3000");
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
