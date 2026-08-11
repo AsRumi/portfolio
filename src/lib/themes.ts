@@ -24,6 +24,13 @@ export type HomeTheme = {
   skyGradient: string;
   /** Four mountain ridge fills, farthest/lightest → closest/darkest. */
   mountainFills: [string, string, string, string];
+  /**
+   * Three stops fed to the WebGL shader gradient that drifts behind the sky.
+   * Deliberately pulled from the *upper* half of skyGradient: the shader layer
+   * only covers the top of the hero, and the CSS gradient underneath still
+   * supplies the deep bottom end, so sampling dark stops here would flatten it.
+   */
+  shaderColors: [string, string, string];
   /** Gradient behind the featured / writing / research sections below the hero. */
   bodyGradient: string;
   /** Background for the role dropdown popover — rgba baked to ~0.95 alpha. */
@@ -48,6 +55,10 @@ export const THEMES: Record<ThemeId, HomeTheme> = {
       "rgba(60, 25, 5, 0.55)",
       "rgba(30, 10, 2, 0.75)",
     ],
+    // Lighter than skyGradient's stops. The shader's own 3D lighting darkens
+    // whatever it's given, so feeding it the literal sky values collapsed the
+    // amber end into flat red and lost the top-to-bottom warmth.
+    shaderColors: ["#FFC168", "#E8752A", "#A83A18"],
     bodyGradient:
       "linear-gradient(180deg, #8B2E14 0%, #a84010 15%, #d6652a 40%, #c45520 70%, #b84418 100%)",
     dropdownBg: "rgba(92, 26, 10, 0.95)",
@@ -68,6 +79,9 @@ export const THEMES: Record<ThemeId, HomeTheme> = {
       "rgba(26, 38, 70, 0.6)",
       "rgba(10, 16, 32, 0.8)",
     ],
+    // Lifted a touch brighter than skyGradient's stops — the shader multiplies
+    // its own shading over these, so literal sky values render near-black.
+    shaderColors: ["#3B5EA8", "#24365F", "#101B33"],
     bodyGradient:
       "linear-gradient(180deg, #0B1220 0%, #101d33 15%, #16273f 40%, #12213a 70%, #0d1a30 100%)",
     dropdownBg: "rgba(13, 22, 40, 0.95)",

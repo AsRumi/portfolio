@@ -5,6 +5,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PERSONAS, PERSONA_MAP, type PersonaId } from "@/lib/personas";
 import { THEMES, themeForPersona } from "@/lib/themes";
+import ShaderBackdrop from "@/components/visuals/ShaderBackdrop";
 
 // Ridge shapes only. Each layer's *color* now comes from the active theme
 // (themeForPersona → mountainFills[i]), so the same silhouettes recolor between
@@ -69,6 +70,36 @@ export default function HeroSection({ selected, onSelect }: Props) {
         transition={{ duration: 0.9, ease: "easeOut" }}
         style={{ background: THEMES.midnight.skyGradient }}
       />
+
+      {/*
+        Animated WebGL sky.
+        Sits above both CSS gradients and below the mountains, so the silhouettes
+        still read as the front-most plane.
+
+        The mask is what keeps this from flattening the hero: the shader is at
+        full strength across the upper sky and dissolves to nothing by ~88% down,
+        letting the CSS gradient's deep base survive underneath. Mountains then
+        sit on solid color rather than on drifting noise, which is what preserves
+        the sense of depth. Composited below full opacity so the vertical
+        amber→maroon progression still shows through rather than being painted
+        over — see the ShaderBackdrop call for the current value.
+      */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-0"
+        style={{
+          maskImage:
+            "linear-gradient(180deg, #000 0%, #000 42%, rgba(0,0,0,0.55) 68%, transparent 88%)",
+          WebkitMaskImage:
+            "linear-gradient(180deg, #000 0%, #000 42%, rgba(0,0,0,0.55) 68%, transparent 88%)",
+        }}
+      >
+        <ShaderBackdrop
+          colors={theme.shaderColors}
+          opacity={0.6}
+          reflection={0.5}
+        />
+      </div>
 
       {/*
         Mountain SVG — viewBox 1440×800 with preserveAspectRatio="xMidYMax slice".
