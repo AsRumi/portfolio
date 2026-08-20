@@ -1,10 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Search, X } from "lucide-react";
 import type { BlogPost } from "@/types";
+import TagSearch, { useTagFilter } from "@/components/ui/TagSearch";
 
 function estimateReadTime(content: string | null): string {
   if (!content) return "1 min read";
@@ -18,102 +17,24 @@ type Props = {
   allTags: string[];
 };
 
-/**
- * Splits the raw search input into individual terms. Commas and whitespace both
- * act as separators so "llm, security" and "llm security" behave identically.
- */
-function parseTerms(query: string): string[] {
-  return query
-    .toLowerCase()
-    .split(/[,\s]+/)
-    .map((t) => t.trim())
-    .filter(Boolean);
-}
-
 export default function BlogGrid({ posts, allTags }: Props) {
-  const [query, setQuery] = useState("");
-
-  const terms = useMemo(() => parseTerms(query), [query]);
-
-  // A post matches when *every* term is a substring of at least one of its tags.
-  // This makes multi-term input narrow the results (AND) rather than widen them.
-  const filtered = useMemo(() => {
-    if (terms.length === 0) return posts;
-    return posts.filter((p) => {
-      const tags = (p.tags ?? []).map((t) => t.toLowerCase());
-      return terms.every((term) => tags.some((tag) => tag.includes(term)));
-    });
-  }, [posts, terms]);
-
-  // Suggestions are only rendered while the user is typing, which keeps the
-  // page uncluttered by default but still lets tags be discovered.
-  const suggestions = useMemo(() => {
-    if (terms.length === 0) return [];
-    const last = terms[terms.length - 1];
-    return allTags
-      .filter((tag) => tag.toLowerCase().includes(last))
-      .slice(0, 10);
-  }, [allTags, terms]);
+  const { query, setQuery, terms, filtered } = useTagFilter(posts);
 
   return (
     <div className="flex flex-col gap-10">
       {allTags.length > 0 && (
-        <motion.div
-          className="flex flex-col items-end gap-3"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <div className="relative w-full max-w-md">
-            <Search
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50"
-              aria-hidden="true"
-            />
-            <input
-              type="search"
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search by tag — e.g. llm evaluation, ai security"
-              aria-label="Filter posts by tag"
-              className="w-full rounded-full border border-white/25 bg-white/10 backdrop-blur-sm py-2.5 pl-11 pr-11 text-sm text-white placeholder:text-white/50 outline-none transition-colors hover:bg-white/15 focus:border-white/50 focus:bg-white/15 [&::-webkit-search-cancel-button]:hidden"
-            />
-            {query && (
-              <button
-                onClick={() => setQuery("")}
-                aria-label="Clear search"
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-white/60 transition-colors hover:bg-white/15 hover:text-white"
-              >
-                <X className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
-
-          {suggestions.length > 0 && (
-            <div className="flex flex-wrap items-center justify-end gap-2">
-              {suggestions.map((tag) => (
-                <button
-                  key={tag}
-                  // Replace only the term being typed so earlier terms survive.
-                  onClick={() =>
-                    setQuery(
-                      [...terms.slice(0, -1), tag].join(", ") + ", "
-                    )
-                  }
-                  className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-white/25"
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          )}
-
-          {terms.length > 0 && (
-            <p className="text-xs text-white/60">
-              {filtered.length} {filtered.length === 1 ? "post" : "posts"} matching
-            </p>
-          )}
-        </motion.div>
+        <TagSearch
+          query={query}
+          onQueryChange={setQuery}
+          allTags={allTags}
+          placeholder="Search by tag — e.g. llm evaluation, ai security"
+          ariaLabel="Filter posts by tag"
+          resultLabel={
+            terms.length > 0
+              ? `${filtered.length} ${filtered.length === 1 ? "post" : "posts"} matching`
+              : null
+          }
+        />
       )}
 
       {filtered.length > 0 ? (

@@ -3,7 +3,12 @@
 import Link from "next/link";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PERSONAS, PERSONA_MAP, type PersonaId } from "@/lib/personas";
+import {
+  PERSONAS,
+  PERSONA_MAP,
+  RESEARCH_PERSONA,
+  type PersonaId,
+} from "@/lib/personas";
 import { THEMES, themeForPersona } from "@/lib/themes";
 import ShaderBackdrop from "@/components/visuals/ShaderBackdrop";
 
@@ -141,7 +146,6 @@ export default function HeroSection({ selected, onSelect }: Props) {
       {/* Hero text — each element enters independently, staggered after mountains */}
       <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-8 pt-32 sm:pt-48 pb-20 sm:pb-32 flex flex-col gap-6 sm:gap-8">
         <div className="flex flex-col gap-4 max-w-4xl">
-
           {/* Eyebrow — fades in, no movement */}
           <motion.p
             className="text-sm font-medium text-white/60 uppercase tracking-widest"
@@ -200,15 +204,45 @@ export default function HeroSection({ selected, onSelect }: Props) {
             className="group inline-flex items-center gap-2 text-white text-sm border-b border-white/40 pb-0.5 hover:border-white transition-colors"
           >
             View Projects
-            <span className="transition-transform group-hover:translate-x-1">→</span>
+            <span className="transition-transform group-hover:translate-x-1">
+              →
+            </span>
           </Link>
           <Link
-            href="/research"
+            href="/blog"
             className="group inline-flex items-center gap-2 text-white text-sm border-b border-white/40 pb-0.5 hover:border-white transition-colors"
           >
-            Read Research
-            <span className="transition-transform group-hover:translate-x-1">→</span>
+            Read Blogs
+            <span className="transition-transform group-hover:translate-x-1">
+              →
+            </span>
           </Link>
+
+          {/* Research is only relevant to the researcher persona, matching the
+              same rule that governs the research section further down the page.
+              AnimatePresence keeps it from popping in and out when the visitor
+              switches personas. */}
+          <AnimatePresence>
+            {selected === RESEARCH_PERSONA && (
+              <motion.div
+                key="research-cta"
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -8 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+              >
+                <Link
+                  href="/research"
+                  className="group inline-flex items-center gap-2 text-white text-sm border-b border-white/40 pb-0.5 hover:border-white transition-colors"
+                >
+                  Read Research
+                  <span className="transition-transform group-hover:translate-x-1">
+                    →
+                  </span>
+                </Link>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </div>
     </section>

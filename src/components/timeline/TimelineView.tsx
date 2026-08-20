@@ -1,161 +1,156 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import type { TimelineEntry } from "@/types";
+import TimelineDetailPanel from "./TimelineDetailPanel";
+import TimelineGantt from "./TimelineGantt";
+import TimelineList from "./TimelineList";
+import {
+  ALL_CATEGORIES,
+  CATEGORY_COLORS,
+  CATEGORY_LABELS,
+  fullDomain,
+  recentDomain,
+  type Category,
+} from "./timeline-utils";
 
-const CATEGORY_COLORS: Record<TimelineEntry["category"], string> = {
-  project: "#60A5FA",
-  research: "#C084FC",
-  job: "#4ADE80",
-  education: "#FCD34D",
-  milestone: "#F87171",
+type Range = "all" | "recent";
+
+const RANGE_LABELS: Record<Range, string> = {
+  all: "All time",
+  recent: "Last 2 years",
 };
-
-const CATEGORY_LABELS: Record<TimelineEntry["category"], string> = {
-  project: "Project",
-  research: "Research",
-  job: "Job",
-  education: "Education",
-  milestone: "Milestone",
-};
-
-const ALL_CATEGORIES: TimelineEntry["category"][] = [
-  "project", "research", "job", "education", "milestone",
-];
 
 type Props = {
   entries: TimelineEntry[];
 };
 
 export default function TimelineView({ entries }: Props) {
-  const [activeCategories, setActiveCategories] = useState<Set<TimelineEntry["category"]>>(
-    new Set(ALL_CATEGORIES)
+  const [activeCategories, setActiveCategories] = useState<Set<Category>>(
+    new Set(ALL_CATEGORIES),
   );
+  const [range, setRange] = useState<Range>("recent");
+  const [selected, setSelected] = useState<TimelineEntry | null>(null);
 
-  function toggleCategory(cat: TimelineEntry["category"]) {
+  function toggleCategory(cat: Category) {
     setActiveCategories((prev) => {
       const next = new Set(prev);
-      next.has(cat) ? next.delete(cat) : next.add(cat);
+      if (next.has(cat)) next.delete(cat);
+      else next.add(cat);
       return next;
     });
   }
 
-  const filtered = entries.filter((e) => activeCategories.has(e.category));
+  const filtered = useMemo(
+    () => entries.filter((e) => activeCategories.has(e.category)),
+    [entries, activeCategories],
+  );
 
-  function formatDate(dateStr: string) {
-    return new Date(dateStr).toLocaleDateString("en-US", {
-      month: "short",
-      year: "numeric",
-    });
-  }
+  // The domain is derived from the *unfiltered* set so that toggling a
+  // category doesn't rescale the axis under the user — the time window stays
+  // put and bars simply appear or disappear.
+  const domain = useMemo(
+    () => (range === "all" ? fullDomain(entries) : recentDomain(24)),
+    [entries, range],
+  );
+
+  // Only offer categories that actually exist in the data.
+  const presentCategories = useMemo(() => {
+    const present = new Set(entries.map((e) => e.category));
+    return ALL_CATEGORIES.filter((c) => present.has(c));
+  }, [entries]);
 
   return (
-    <div className="flex flex-col gap-5 mx-auto w-full max-w-2xl">
-      {/* Category filters */}
+    <div className="flex w-full flex-col gap-8">
+      {/* Controls: category legend/filters on the left, range toggle on the right */}
       <motion.div
-        className="flex flex-wrap gap-1.5"
+        className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-40px" }}
         transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
       >
-        {ALL_CATEGORIES.map((cat) => (
-          <button
-            key={cat}
-            onClick={() => toggleCategory(cat)}
-            className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs transition-colors ${
-              activeCategories.has(cat)
-                ? "bg-white text-[#a84010] font-medium"
-                : "bg-white/15 text-white/80 hover:bg-white/25"
-            }`}
-          >
-            <span
-              className="w-1.5 h-1.5 rounded-full shrink-0"
-              style={{ backgroundColor: CATEGORY_COLORS[cat] }}
-            />
-            {CATEGORY_LABELS[cat]}
-          </button>
-        ))}
+        <div className="flex flex-wrap gap-1.5">
+          {presentCategories.map((cat) => {
+            const active = activeCategories.has(cat);
+            return (
+              <button
+                key={cat}
+                type="button"
+                onClick={() => toggleCategory(cat)}
+                aria-pressed={active}
+                className={`flex items-center gap-1.5 rounded-full px-3 py-1 text-xs transition-colors ${
+                  active
+                    ? "bg-white font-medium text-[#a84010]"
+                    : "bg-white/15 text-white/80 hover:bg-white/25"
+                }`}
+              >
+                <span
+                  className="h-1.5 w-1.5 shrink-0 rounded-full"
+                  style={{ backgroundColor: CATEGORY_COLORS[cat] }}
+                />
+                {CATEGORY_LABELS[cat]}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Zooming to a recent window is what keeps a dense cluster of short
+            entries legible once the full-history view gets crowded. */}
+        <div className="hidden shrink-0 rounded-full border border-white/25 bg-white/10 p-0.5 md:flex">
+          {(["all", "recent"] as Range[]).map((r) => (
+            <button
+              key={r}
+              type="button"
+              onClick={() => setRange(r)}
+              aria-pressed={range === r}
+              className={`rounded-full px-3.5 py-1 text-xs transition-colors ${
+                range === r
+                  ? "bg-white font-medium text-[#a84010]"
+                  : "text-white/75 hover:text-white"
+              }`}
+            >
+              {RANGE_LABELS[r]}
+            </button>
+          ))}
+        </div>
       </motion.div>
 
       {filtered.length > 0 ? (
-        <div className="relative flex flex-col gap-0">
-          {/* Vertical line */}
-          <div className="absolute left-3 top-2 bottom-2 w-px bg-white/25" />
+        <>
+          {/* Two viewports, two layouts. Rendering both and switching with
+              Tailwind breakpoints (rather than measuring in JS) keeps the
+              server and client markup identical, so there is no hydration
+              mismatch or first-paint flash. */}
+          <div className="hidden md:block">
+            <TimelineGantt
+              entries={filtered}
+              domain={domain}
+              selectedId={selected?.id ?? null}
+              onSelect={setSelected}
+            />
+            <p className="mt-8 text-xs text-white/45">
+              Select any bar for details. Bar length is duration; the white line
+              marks today.
+            </p>
+          </div>
 
-          {filtered.map((entry, i) => (
-            <motion.div
-              key={entry.id}
-              className="relative flex gap-8 pb-10"
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-40px" }}
-              transition={{
-                delay: 0.1 + i * 0.12,
-                duration: 1.0,
-                ease: [0.16, 1, 0.3, 1],
-              }}
-            >
-
-              {/* Dot */}
-              <div
-                className="relative z-10 mt-1.5 w-6 h-6 rounded-full shrink-0 border-2 border-white/30 shadow-sm"
-                style={{
-                  backgroundColor: entry.color_override ?? CATEGORY_COLORS[entry.category],
-                }}
-              />
-
-              {/* Content card */}
-              <motion.div
-                whileHover={{ y: -3, scale: 1.01 }}
-                transition={{ duration: 0.2, ease: "easeOut" }}
-                className="flex flex-col gap-2 flex-1 bg-white/10 border border-white/20 rounded-2xl p-5 hover:bg-white/20 hover:border-white/35 transition-colors backdrop-blur-sm"
-              >
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="font-medium text-white">
-                    {entry.related_url ? (
-                      <Link
-                        href={entry.related_url}
-                        className="hover:text-white/75 transition-colors"
-                      >
-                        {entry.title}
-                      </Link>
-                    ) : (
-                      entry.title
-                    )}
-                  </h3>
-                  <span
-                    className="rounded-full px-2.5 py-0.5 text-xs font-medium"
-                    style={{
-                      backgroundColor: `${CATEGORY_COLORS[entry.category]}30`,
-                      color: CATEGORY_COLORS[entry.category],
-                    }}
-                  >
-                    {CATEGORY_LABELS[entry.category]}
-                  </span>
-                </div>
-
-                <p className="text-xs text-white/55 font-medium">
-                  {formatDate(entry.start_date)}
-                  {entry.end_date
-                    ? ` — ${formatDate(entry.end_date)}`
-                    : " — Present"}
-                </p>
-
-                {entry.description && (
-                  <p className="text-sm text-white/65 leading-relaxed">
-                    {entry.description}
-                  </p>
-                )}
-              </motion.div>
-            </motion.div>
-          ))}
-        </div>
+          <div className="md:hidden">
+            <TimelineList
+              entries={filtered}
+              selectedId={selected?.id ?? null}
+              onSelect={setSelected}
+            />
+          </div>
+        </>
       ) : (
-        <p className="text-sm text-white/70">No entries match the selected filters.</p>
+        <p className="text-sm text-white/70">
+          No entries match the selected filters.
+        </p>
       )}
+
+      <TimelineDetailPanel entry={selected} onClose={() => setSelected(null)} />
     </div>
   );
 }

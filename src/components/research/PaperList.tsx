@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import type { ResearchPaper } from "@/types";
+import TagSearch, { useTagFilter } from "@/components/ui/TagSearch";
 
 type Props = {
   papers: ResearchPaper[];
@@ -10,17 +11,17 @@ type Props = {
 };
 
 export default function PaperList({ papers, allTags }: Props) {
-  const [activeTag, setActiveTag] = useState<string | null>(null);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
-  const filtered = activeTag
-    ? papers.filter((p) => p.tags?.includes(activeTag))
-    : papers;
+  // Tags are still what the filter matches on, they're just no longer rendered
+  // as chips — the vocabulary is surfaced through the search typeahead instead.
+  const { query, setQuery, terms, filtered } = useTagFilter(papers);
 
   function toggleAbstract(id: string) {
     setExpandedIds((prev) => {
       const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   }
@@ -28,37 +29,18 @@ export default function PaperList({ papers, allTags }: Props) {
   return (
     <div className="flex flex-col gap-10">
       {allTags.length > 0 && (
-        <motion.div
-          className="flex flex-wrap gap-2"
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <button
-            onClick={() => setActiveTag(null)}
-            className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
-              activeTag === null
-                ? "bg-white text-[#a84010]"
-                : "bg-white/15 text-white hover:bg-white/25"
-            }`}
-          >
-            All
-          </button>
-          {allTags.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => setActiveTag(tag === activeTag ? null : tag)}
-              className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
-                activeTag === tag
-                  ? "bg-white text-[#a84010]"
-                  : "bg-white/15 text-white hover:bg-white/25"
-              }`}
-            >
-              {tag}
-            </button>
-          ))}
-        </motion.div>
+        <TagSearch
+          query={query}
+          onQueryChange={setQuery}
+          allTags={allTags}
+          placeholder="Search by topic — e.g. medical imaging, style transfer"
+          ariaLabel="Filter papers by tag"
+          resultLabel={
+            terms.length > 0
+              ? `${filtered.length} ${filtered.length === 1 ? "paper" : "papers"} matching`
+              : null
+          }
+        />
       )}
 
       {filtered.length > 0 ? (
@@ -95,26 +77,15 @@ export default function PaperList({ papers, allTags }: Props) {
                 <p className="text-sm text-white/55 italic">{paper.venue}</p>
               )}
 
-              {paper.tags && paper.tags.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {paper.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full bg-white/15 px-2.5 py-0.5 text-xs text-white/80"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-
               {paper.abstract && (
                 <div>
                   <button
                     onClick={() => toggleAbstract(paper.id)}
                     className="text-xs text-white/60 hover:text-white transition-colors flex items-center gap-1"
                   >
-                    {expandedIds.has(paper.id) ? "Hide abstract ↑" : "Show abstract ↓"}
+                    {expandedIds.has(paper.id)
+                      ? "Hide abstract ↑"
+                      : "Show abstract ↓"}
                   </button>
                   {expandedIds.has(paper.id) && (
                     <motion.p
@@ -155,7 +126,9 @@ export default function PaperList({ papers, allTags }: Props) {
           ))}
         </div>
       ) : (
-        <p className="text-sm text-white/70">No papers match the selected filter.</p>
+        <p className="text-sm text-white/70">
+          No papers match your search.
+        </p>
       )}
     </div>
   );
