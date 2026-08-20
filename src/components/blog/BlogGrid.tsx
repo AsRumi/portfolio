@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { Search, X } from "lucide-react";
 import type { BlogPost } from "@/types";
 
 function estimateReadTime(content: string | null): string {
@@ -17,46 +18,101 @@ type Props = {
   allTags: string[];
 };
 
-export default function BlogGrid({ posts, allTags }: Props) {
-  const [activeTag, setActiveTag] = useState<string | null>(null);
+/**
+ * Splits the raw search input into individual terms. Commas and whitespace both
+ * act as separators so "llm, security" and "llm security" behave identically.
+ */
+function parseTerms(query: string): string[] {
+  return query
+    .toLowerCase()
+    .split(/[,\s]+/)
+    .map((t) => t.trim())
+    .filter(Boolean);
+}
 
-  const filtered = activeTag
-    ? posts.filter((p) => p.tags?.includes(activeTag))
-    : posts;
+export default function BlogGrid({ posts, allTags }: Props) {
+  const [query, setQuery] = useState("");
+
+  const terms = useMemo(() => parseTerms(query), [query]);
+
+  // A post matches when *every* term is a substring of at least one of its tags.
+  // This makes multi-term input narrow the results (AND) rather than widen them.
+  const filtered = useMemo(() => {
+    if (terms.length === 0) return posts;
+    return posts.filter((p) => {
+      const tags = (p.tags ?? []).map((t) => t.toLowerCase());
+      return terms.every((term) => tags.some((tag) => tag.includes(term)));
+    });
+  }, [posts, terms]);
+
+  // Suggestions are only rendered while the user is typing, which keeps the
+  // page uncluttered by default but still lets tags be discovered.
+  const suggestions = useMemo(() => {
+    if (terms.length === 0) return [];
+    const last = terms[terms.length - 1];
+    return allTags
+      .filter((tag) => tag.toLowerCase().includes(last))
+      .slice(0, 10);
+  }, [allTags, terms]);
 
   return (
     <div className="flex flex-col gap-10">
       {allTags.length > 0 && (
         <motion.div
-          className="flex flex-wrap gap-2"
+          className="flex flex-col items-end gap-3"
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-60px" }}
           transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
         >
-          <button
-            onClick={() => setActiveTag(null)}
-            className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
-              activeTag === null
-                ? "bg-white text-[#a84010]"
-                : "bg-white/15 text-white hover:bg-white/25"
-            }`}
-          >
-            All
-          </button>
-          {allTags.map((tag) => (
-            <button
-              key={tag}
-              onClick={() => setActiveTag(tag === activeTag ? null : tag)}
-              className={`rounded-full px-4 py-1.5 text-xs font-medium transition-colors ${
-                activeTag === tag
-                  ? "bg-white text-[#a84010]"
-                  : "bg-white/15 text-white hover:bg-white/25"
-              }`}
-            >
-              {tag}
-            </button>
-          ))}
+          <div className="relative w-full max-w-md">
+            <Search
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-white/50"
+              aria-hidden="true"
+            />
+            <input
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search by tag — e.g. llm evaluation, ai security"
+              aria-label="Filter posts by tag"
+              className="w-full rounded-full border border-white/25 bg-white/10 backdrop-blur-sm py-2.5 pl-11 pr-11 text-sm text-white placeholder:text-white/50 outline-none transition-colors hover:bg-white/15 focus:border-white/50 focus:bg-white/15 [&::-webkit-search-cancel-button]:hidden"
+            />
+            {query && (
+              <button
+                onClick={() => setQuery("")}
+                aria-label="Clear search"
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-white/60 transition-colors hover:bg-white/15 hover:text-white"
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            )}
+          </div>
+
+          {suggestions.length > 0 && (
+            <div className="flex flex-wrap items-center justify-end gap-2">
+              {suggestions.map((tag) => (
+                <button
+                  key={tag}
+                  // Replace only the term being typed so earlier terms survive.
+                  onClick={() =>
+                    setQuery(
+                      [...terms.slice(0, -1), tag].join(", ") + ", "
+                    )
+                  }
+                  className="rounded-full bg-white/15 px-3 py-1 text-xs font-medium text-white transition-colors hover:bg-white/25"
+                >
+                  {tag}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {terms.length > 0 && (
+            <p className="text-xs text-white/60">
+              {filtered.length} {filtered.length === 1 ? "post" : "posts"} matching
+            </p>
+          )}
         </motion.div>
       )}
 
@@ -92,7 +148,7 @@ export default function BlogGrid({ posts, allTags }: Props) {
                   )}
                 </div>
                 <div className="flex flex-col gap-3 p-5 flex-1">
-                  <h3 className="font-medium text-white group-hover:text-white/80 transition-colors line-clamp-2">
+                  <h3 className="font-display text-xl sm:text-2xl font-semibold leading-snug tracking-tight text-white group-hover:text-white/80 transition-colors line-clamp-2">
                     {post.title}
                   </h3>
                   {post.excerpt && (
@@ -130,7 +186,11 @@ export default function BlogGrid({ posts, allTags }: Props) {
           ))}
         </div>
       ) : (
-        <p className="text-sm text-white/70">No posts match the selected filter.</p>
+        <p className="text-sm text-white/70">
+          {terms.length > 0
+            ? `No posts have a tag matching "${query.trim()}".`
+            : "No posts yet."}
+        </p>
       )}
     </div>
   );

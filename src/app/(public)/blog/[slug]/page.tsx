@@ -5,7 +5,13 @@ import { createClient } from "@/lib/supabase/server";
 import type { BlogPost } from "@/types";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeRaw from "rehype-raw";
+import rehypeKatex from "rehype-katex";
 import TableOfContents from "@/components/blog/TableOfContents";
+
+// KaTeX ships its own stylesheet; without it, rendered math has no layout.
+import "katex/dist/katex.min.css";
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -42,6 +48,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: data.excerpt ?? undefined,
     },
   };
+}
+
+/**
+ * remark-math only treats `$$` as *display* math when the delimiters sit on
+ * their own lines; a standalone `$$...$$` one-liner is parsed as inline math and
+ * renders at body text size. Rewriting those lines into the fenced form gives
+ * standalone equations proper centered display styling. Inline `$x$` inside a
+ * sentence is untouched because the whole line must be the equation.
+ */
+function normalizeDisplayMath(content: string): string {
+  return content.replace(
+    /^[ \t]*\$\$[ \t]*(?!\s*$)([\s\S]*?)[ \t]*\$\$[ \t]*$/gm,
+    (_match, expr: string) => `$$\n${expr.trim()}\n$$`
+  );
 }
 
 function estimateReadTime(content: string | null): string {
@@ -84,7 +104,11 @@ export default async function BlogPostPage({ params }: Props) {
             <img
               src={p.cover_image_url}
               alt={p.title}
-              className="w-full rounded-2xl object-cover max-h-72"
+              /* Matches the project detail page: object-contain + auto width
+                 keeps the image's true aspect ratio instead of cropping it, and
+                 the auto margins both center it and opt it out of the parent
+                 flex column's stretch, so it never spans the full column */
+              className="mx-auto max-w-full max-h-[70vh] w-auto h-auto rounded-2xl object-contain"
             />
           )}
 
@@ -104,19 +128,6 @@ export default async function BlogPostPage({ params }: Props) {
             )}
             <span>{estimateReadTime(p.content)}</span>
           </div>
-
-          {p.tags && p.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2">
-              {p.tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="rounded-full bg-white/15 px-3 py-1 text-xs text-white/80"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-          )}
         </div>
       </div>
 
@@ -137,8 +148,22 @@ export default async function BlogPostPage({ params }: Props) {
                 prose-li:text-white/80
                 prose-img:rounded-xl
                 prose-hr:border-white/20
+                [&_.katex]:text-white [&_.katex-display]:my-6 [&_.katex-display]:overflow-x-auto [&_.katex-display]:overflow-y-hidden
               ">
-                <ReactMarkdown remarkPlugins={[remarkGfm]}>{p.content}</ReactMarkdown>
+                {/*
+                  remark-math + rehype-katex render $inline$ and $$display$$ math.
+                  rehype-raw parses inline HTML in the markdown source (e.g. <hr>,
+                  <br>) into real elements instead of printing it as text — it must
+                  run before rehype-katex so the math nodes survive the reparse.
+                  Raw HTML is unsanitized, which is fine here because post content
+                  is authored only by the admin panel owner.
+                */}
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  rehypePlugins={[rehypeRaw, rehypeKatex]}
+                >
+                  {normalizeDisplayMath(p.content)}
+                </ReactMarkdown>
               </article>
             )}
           </div>

@@ -14,6 +14,7 @@ import { THEMES, themeForPersona } from "@/lib/themes";
 import { useHomeTheme } from "@/lib/theme-context";
 import HeroSection from "./HeroSection";
 import FadeInView from "@/components/ui/FadeInView";
+import HoverMarquee from "@/components/ui/HoverMarquee";
 
 type Props = {
   projects: Project[];
@@ -185,14 +186,15 @@ export default function HomeExperience({ projects, posts, research }: Props) {
                         i !== 0 ? "border-t border-white/15" : ""
                       }`}
                     >
-                      <div className="flex flex-col gap-1">
-                        <h3 className="font-medium text-white group-hover:text-white/75 transition-colors">
+                      <div className="flex flex-col gap-1.5 min-w-0 flex-1">
+                        <h3 className="font-display text-xl sm:text-2xl font-semibold leading-snug tracking-tight text-white group-hover:text-white/75 transition-colors">
                           {post.title}
                         </h3>
                         {post.excerpt && (
-                          <p className="text-sm text-white/60 line-clamp-1">
-                            {post.excerpt}
-                          </p>
+                          <HoverMarquee
+                            text={post.excerpt}
+                            className="text-sm text-white/60"
+                          />
                         )}
                       </div>
                       <div className="flex items-center gap-4 shrink-0">
